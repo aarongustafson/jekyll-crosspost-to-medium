@@ -4,11 +4,11 @@ This plugin makes it possible to automatically syndicate your posts to [Medium](
 
 ## Setup
 
-1. Set up a Medium account (if you don’t already have one)
-2. Go to [your settings page](https://medium.com/me/settings) and look for "Integration Tokens". Generate one. Save it to your Environment Variables as MEDIUM_INTEGRATION_TOKEN
-3. Visit `https://api.medium.com/v1/me?accessToken=`, addint your Integration Token to the end of that URL
-4. Grab the id from the JSON provided and save that to your Environment Variables as MEDIUM_USER_ID
-5. Copy `crosspost_to_medium.rb` to your `plugins` folder
+1. [Sign up for a Medium account](https://medium.com/m/signin?redirect=https%3A%2F%2Fmedium.com%3A443%2F) (if you don’t already have one). Log in.
+2. Go to [your settings page](https://medium.com/me/settings) and look for "Integration Tokens". Generate one. Save it to your [Environment Variables](https://en.wikipedia.org/wiki/Environment_variable) as MEDIUM_INTEGRATION_TOKEN.
+3. Visit `https://api.medium.com/v1/me?accessToken=`, adding your Integration Token to the end of that URL
+4. Grab the id from the JSON provided and save that to your [Environment Variables](https://en.wikipedia.org/wiki/Environment_variable) as MEDIUM_USER_ID.
+5. Copy `crosspost_to_medium.rb` to your site’s `plugins` folder.
 
 ## Crossposting
 
