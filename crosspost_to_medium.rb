@@ -27,11 +27,12 @@ module Jekyll
     priority :low
     
     def generate(site)
-
+      
       user_id = ENV['MEDIUM_USER_ID'] or false
       token = ENV['MEDIUM_INTEGRATION_TOKEN'] or false
 
       if ! user_id or ! token
+        raise ArgumentError, "MediumCrossPostGenerator: Environment variables not found"
         return
       end
       
@@ -68,11 +69,11 @@ module Jekyll
           if url and ! crossposted.include? url
 
             payload = {
-            	'title'			=> post.title,
-            	'contentFormat'	=> "html",
-            	'content'		=> content,
-            	'tags'			=> post.data["categories"],
-            	'canonicalUrl'	=> url
+              'title'     => post.title,
+              'contentFormat' => "html",
+              'content'   => content,
+              'tags'      => post.data["categories"],
+              'canonicalUrl'  => url
             }
 
             # Both Facebook & LinkedIn
@@ -93,11 +94,11 @@ module Jekyll
 
     def crosspost_to_medium( payload )
 
-    	puts "Cross-posting #{payload['title']} to Medium"
+      puts "Cross-posting “#{payload['title']}” to Medium"
 
       user_id = ENV['MEDIUM_USER_ID'] or false
       token = ENV['MEDIUM_INTEGRATION_TOKEN'] or false
-			medium_api = URI.parse("https://api.medium.com/v1/users/#{user_id}/posts")
+      medium_api = URI.parse("https://api.medium.com/v1/users/#{user_id}/posts")
       
       # Build the connection
       https = Net::HTTP.new(medium_api.host, medium_api.port)
