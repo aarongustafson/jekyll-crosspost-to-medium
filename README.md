@@ -16,6 +16,8 @@ Add `crosspost_to_medium: true` to the front matter for any post you would like 
 
 Crossposted files will be logged in `.cache/medium_crossposted.yml`, so make sure that file gets checked into your Git repo if you work from multiple computers. That will enssure you never crosspost an entry more than once.
 
+You can control crossposting globally by setting the same variable in your Jekyll configuration file. Setting it to false will skip the processing loop entirely, which can be useful for local preview builds.
+
 ## Credits
 
 Many thanks to Jeremy Keith for [sharing his process](https://adactio.com/journal/9694) (and [PHP code](https://gist.github.com/adactio/c174a4a68498e30babfd)) for getting this working on his own site.

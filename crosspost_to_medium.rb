@@ -10,6 +10,10 @@
 #  The generator will only pick up posts with the following front matter:
 #
 #   crosspost_to_medium: true
+#  
+#  You can control crossposting globally by setting the same variable 
+#  in your Jekyll configuration file. Setting it to false will skip the
+#  processing loop entirely which can be useful for local preview builds.
 
 require 'json'
 require 'net/http'
@@ -28,67 +32,77 @@ module Jekyll
     
     def generate(site)
       
-      user_id = ENV['MEDIUM_USER_ID'] or false
-      token = ENV['MEDIUM_INTEGRATION_TOKEN'] or false
-
-      if ! user_id or ! token
-        raise ArgumentError, "MediumCrossPostGenerator: Environment variables not found"
-        return
+      # Should we allow this to run?
+      globally_enabled = true
+      if site.config.has_key? 'crosspost_to_medium'
+        globally_enabled = site.config['crosspost_to_medium']
       end
       
-      if defined?(MEDIUM_CACHE_DIR)
+      if globally_enabled
         
-        crossposted_file = File.join(MEDIUM_CACHE_DIR, "medium_crossposted.yml")
-        if File.exists?(crossposted_file)
-          crossposted = open(crossposted_file) { |f| YAML.load(f) }
-        else
-          crossposted = []
+        user_id = ENV['MEDIUM_USER_ID'] or false
+        token = ENV['MEDIUM_INTEGRATION_TOKEN'] or false
+
+        if ! user_id or ! token
+          raise ArgumentError, "MediumCrossPostGenerator: Environment variables not found"
+          return
         end
         
-        site.posts.each do |post|
+        if defined?(MEDIUM_CACHE_DIR)
           
-          if ! post.published?
-            next
+          crossposted_file = File.join(MEDIUM_CACHE_DIR, "medium_crossposted.yml")
+          if File.exists?(crossposted_file)
+            crossposted = open(crossposted_file) { |f| YAML.load(f) }
+          else
+            crossposted = []
           end
-
-          crosspost = post.data.include? "crosspost_to_medium"
-          if ! crosspost or ! post.data["crosspost_to_medium"]
-            next
-          end
-
-          # Get the URL
-          url = "#{site.config['url']}#{post.url}"
           
-          # Content
-          content = post.content
-          content = Kramdown::Document.new(content).to_html
-          content.prepend("<h1>#{post.title}</h1>")
-          content << "<p><i>This was originally posted <a href=\"#{url}\" rel=\"canonical\">on my own site</a>.</i></p>"
-
-          # Only proceed if it has not been cross-posted
-          if url and ! crossposted.include? url
-
-            payload = {
-              'title'     => post.title,
-              'contentFormat' => "html",
-              'content'   => content,
-              'tags'      => post.data["categories"],
-              'canonicalUrl'  => url
-            }
-
-            # Both Facebook & LinkedIn
-            crosspost_to_medium( payload )
+          site.posts.each do |post|
             
-            crossposted << url
+            if ! post.published?
+              next
+            end
 
-          end
+            crosspost = post.data.include? "crosspost_to_medium"
+            if ! crosspost or ! post.data["crosspost_to_medium"]
+              next
+            end
+
+            # Get the URL
+            url = "#{site.config['url']}#{post.url}"
+            
+            # Content
+            content = post.content
+            content = Kramdown::Document.new(content).to_html
+            content.prepend("<h1>#{post.title}</h1>")
+            content << "<p><i>This was originally posted <a href=\"#{url}\" rel=\"canonical\">on my own site</a>.</i></p>"
+
+            # Only proceed if it has not been cross-posted
+            if url and ! crossposted.include? url
+
+              payload = {
+                'title'     => post.title,
+                'contentFormat' => "html",
+                'content'   => content,
+                'tags'      => post.data["categories"],
+                'canonicalUrl'  => url
+              }
+
+              # Both Facebook & LinkedIn
+              crosspost_to_medium( payload )
+              
+              crossposted << url
+
+            end # not crossposted
+
+          end # site.posts.each
+          
+          # Save it back
+          File.open(crossposted_file, 'w') { |f| YAML.dump(crossposted, f) }
 
         end
-        
-        # Save it back
-        File.open(crossposted_file, 'w') { |f| YAML.dump(crossposted, f) }
 
-      end
+      end # globally_enabled
 
     end
 
