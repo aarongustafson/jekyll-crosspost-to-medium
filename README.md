@@ -18,6 +18,14 @@ Crossposted files will be logged in `.cache/medium_crossposted.yml`, so make sur
 
 You can control crossposting globally by setting the same variable in your Jekyll configuration file. Setting it to false will skip the processing loop entirely, which can be useful for local preview builds.
 
+## A Note on Envitronment Variables
+
+If you are having problems setting up Environment Variables, check out these guides:
+
+* [Linux](https://www.digitalocean.com/community/tutorials/how-to-read-and-set-environmental-and-shell-variables-on-a-linux-vps)
+* [Mac](http://osxdaily.com/2015/07/28/set-enviornment-variables-mac-os-x/) (For a GUI, check out [EnvPane](https://github.com/hschmidt/EnvPane))
+* [Windows](http://www.computerhope.com/issues/ch000549.htm)
+
 ## Credits
 
 Many thanks to Jeremy Keith for [sharing his process](https://adactio.com/journal/9694) (and [PHP code](https://gist.github.com/adactio/c174a4a68498e30babfd)) for getting this working on his own site.
