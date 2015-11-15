@@ -1,19 +1,19 @@
 #  By Aaron Gustafson, based on the work of Jeremy Keith
-#  https://github.com/aarongustafson/jekyll-crosspost_to_medium 
+#  https://github.com/aarongustafson/jekyll-crosspost_to_medium
 #  https://gist.github.com/adactio/c174a4a68498e30babfd
 #  Licence : MIT
-#  
-#  This generator cross-posts entries to Medium. To work, this script
-#  requires a MEDIUM_USER_ID environment variable and a 
-#  MEDIUM_INTEGRATION_TOKEN. 
+#
+#  This generator cross-posts entries to Medium. To work, this script requires
+#  a MEDIUM_USER_ID environment variable and a MEDIUM_INTEGRATION_TOKEN.
 #
 #  The generator will only pick up posts with the following front matter:
 #
-#   crosspost_to_medium: true
-#  
-#  You can control crossposting globally by setting the same variable 
-#  in your Jekyll configuration file. Setting it to false will skip the
-#  processing loop entirely which can be useful for local preview builds.
+#  `crosspost_to_medium: true`
+#
+#  You can control crossposting globally by setting `enabled: true` under the 
+#  `jekyll-crosspost_to_medium` variable in your Jekyll configuration file.
+#  Setting it to false will skip the processing loop entirely which can be
+#  useful for local preview builds.
 
 require 'json'
 require 'net/http'
@@ -21,25 +21,19 @@ require 'net/https'
 require 'kramdown'
 require 'uri'
 
-MEDIUM_CACHE_DIR = File.expand_path('../../.cache', __FILE__)
-FileUtils.mkdir_p(MEDIUM_CACHE_DIR)
-
 module Jekyll
-  
   class MediumCrossPostGenerator < Generator
     safe true
     priority :low
-    
+
     def generate(site)
-      
-      # Should we allow this to run?
-      globally_enabled = true
-      if site.config.has_key? 'crosspost_to_medium'
-        globally_enabled = site.config['crosspost_to_medium']
-      end
-      
+      @settings = site.config['jekyll-crosspost_to_medium']
+
+      globally_enabled = @settings['enabled'] || true
+      cache_dir = @settings['cache'] || site.config['source'] + '/.jekyll-crosspost_to_medium'
+      @crossposted_file = File.join(cache_dir, "medium_crossposted.yml")
+
       if globally_enabled
-        
         user_id = ENV['MEDIUM_USER_ID'] or false
         token = ENV['MEDIUM_INTEGRATION_TOKEN'] or false
 
@@ -47,73 +41,90 @@ module Jekyll
           raise ArgumentError, "MediumCrossPostGenerator: Environment variables not found"
           return
         end
-        
-        if defined?(MEDIUM_CACHE_DIR)
-          
-          crossposted_file = File.join(MEDIUM_CACHE_DIR, "medium_crossposted.yml")
-          if File.exists?(crossposted_file)
-            crossposted = open(crossposted_file) { |f| YAML.load(f) }
+
+        if defined?(cache_dir)
+          FileUtils.mkdir_p(cache_dir)
+
+          if File.exists?(@crossposted_file)
+            crossposted = open(@crossposted_file) { |f| YAML.load(f) }
           else
             crossposted = []
           end
-          
-          site.posts.each do |post|
-            
-            if ! post.published?
-              next
+
+          # If Jekyll 3.0, use hooks
+          if (Jekyll.const_defined? :Hooks)
+            Jekyll::Hooks.register :posts, :post_render do |post|
+              if ! post.published?
+                next
+              end
+
+              crosspost = post.data.include? 'crosspost_to_medium'
+              if ! crosspost or ! post.data['crosspost_to_medium']
+                next
+              end
+
+              content = post.content
+              url = "#{site.config['url']}#{post.url}"
+              title = post.data['title']
+
+              crosspost_payload(crossposted, post, content, title, url)
             end
+          else
+            site.posts do |post|
+              if ! post.published?
+                next
+              end
 
-            crosspost = post.data.include? "crosspost_to_medium"
-            if ! crosspost or ! post.data["crosspost_to_medium"]
-              next
+              crosspost = post.data.include? 'crosspost_to_medium'
+              if ! crosspost or ! post.data['crosspost_to_medium']
+                next
+              end
+
+              content = Kramdown::Document.new(post.content).to_html
+              url = "#{site.config['url']}#{post.url}"
+              title = post.title
+
+              crosspost_payload(crossposted, post, content, title, url)
             end
-
-            # Get the URL
-            url = "#{site.config['url']}#{post.url}"
-            
-            # Content
-            content = post.content
-            content = Kramdown::Document.new(content).to_html
-            content.prepend("<h1>#{post.title}</h1>")
-            content << "<p><i>This was originally posted <a href=\"#{url}\" rel=\"canonical\">on my own site</a>.</i></p>"
-
-            # Only proceed if it has not been cross-posted
-            if url and ! crossposted.include? url
-
-              payload = {
-                'title'     => post.title,
-                'contentFormat' => "html",
-                'content'   => content,
-                'tags'      => post.data["categories"],
-                'canonicalUrl'  => url
-              }
-
-              # Both Facebook & LinkedIn
-              crosspost_to_medium( payload )
-              
-              crossposted << url
-
-            end # not crossposted
-
-          end # site.posts.each
-          
-          # Save it back
-          File.open(crossposted_file, 'w') { |f| YAML.dump(crossposted, f) }
-
+          end
         end
-
-      end # globally_enabled
-
+      end
     end
 
-    def crosspost_to_medium( payload )
 
+    def crosspost_payload(crossposted, post, content, title, url)
+      # Prepend the title and add a link back to originating site
+      content.prepend("<h1>#{title}</h1>")
+      content << "<p><i>This article was originally posted <a href=\"#{url}\" rel=\"canonical\">on my own site</a>.</i></p>"
+
+      # Only cross-post if content has not already been cross-posted
+      if url and ! crossposted.include? url
+        payload = {
+          'title'         => title,
+          'contentFormat' => "html",
+          'content'       => content,
+          'tags'          => post.data['tags'],
+          'publishStatus' => @settings['status'] || "public",
+          'license'       => @settings['license'] || "all-rights-reserved",
+          'canonicalUrl'  => url
+        }
+
+        crosspost_to_medium(payload)
+        crossposted << url
+
+        # Update cache
+        File.open(@crossposted_file, 'w') { |f| YAML.dump(crossposted, f) }
+      end
+    end
+
+
+    def crosspost_to_medium(payload)
       puts "Cross-posting “#{payload['title']}” to Medium"
 
       user_id = ENV['MEDIUM_USER_ID'] or false
       token = ENV['MEDIUM_INTEGRATION_TOKEN'] or false
       medium_api = URI.parse("https://api.medium.com/v1/users/#{user_id}/posts")
-      
+
       # Build the connection
       https = Net::HTTP.new(medium_api.host, medium_api.port)
       https.use_ssl = true
@@ -127,12 +138,10 @@ module Jekyll
 
       # Set the payload
       request.body = JSON.generate(payload)
-      
+
       # Post it
       response = https.request(request)
-
     end
 
   end
-  
 end

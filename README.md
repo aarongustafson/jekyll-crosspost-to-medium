@@ -14,11 +14,43 @@ This plugin makes it possible to automatically syndicate your posts to [Medium](
 
 Add `crosspost_to_medium: true` to the front matter for any post you would like to crosspost to Medium.
 
-Crossposted files will be logged in `.cache/medium_crossposted.yml`, so make sure that file gets checked into your Git repo if you work from multiple computers. That will enssure you never crosspost an entry more than once.
+## Configuation options
 
-You can control crossposting globally by setting the same variable in your Jekyll configuration file. Setting it to false will skip the processing loop entirely, which can be useful for local preview builds.
+This plugin takes a number of configuration options. These allow you to customise how the plugin works and what metadata is included when you syndicate to Medium. The following options are available:
 
-## A Note on Envitronment Variables
+```
+jekyll-crosspost_to_medium:
+  enabled: true | false
+  cache: .jekyll-crosspost_to_medium
+  status: public | draft | unlisted
+  license: all-rights-reserved | cc-40-by | cc-40-by-sa | cc-40-by-nd | cc-40-by-nc | cc-40-by-nc-nd | cc-40-by-nc-sa | cc-40-zero | public-domain
+```
+
+### `enabled`
+
+Default: `true`
+
+Controls crossposting globally. Setting this to false will skip the processing loop entirely which can be useful for local preview builds.
+
+### `cache`
+
+Default: `[source directory]/.jekyll-crosspost_to_medium`
+
+The name of the diretory where crossposted files will be logged. Make sure this file gets checked into your Git repo if you work from multiple computers. This will ensure you never crosspost an entry more than once.
+
+### `status`
+
+Default: `public`
+
+The status your post is given when it is syndicated to Medium.
+
+### `license`
+
+Default: `all-rights-reserved`
+
+The license your post is given when it is syndicated to Medium.
+
+## A Note on Environment Variables
 
 If you are having problems setting up Environment Variables, check out these guides:
 
