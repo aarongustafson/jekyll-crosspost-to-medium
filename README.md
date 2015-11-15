@@ -12,13 +12,13 @@ This plugin makes it possible to automatically syndicate your posts to [Medium](
 
 ## Crossposting
 
-Add `crosspost_to_medium: true` to the front matter for any post you would like to crosspost to Medium.
+Add `crosspost_to_medium: true` to the front matter of any post you would like to crosspost to Medium.
 
-## Configuation options
+## Configuation
 
 This plugin takes a number of configuration options. These allow you to customise how the plugin works and what metadata is included when you syndicate to Medium. The following options are available:
 
-```
+```yaml
 jekyll-crosspost_to_medium:
   enabled: true | false
   cache: .jekyll-crosspost_to_medium
@@ -26,29 +26,29 @@ jekyll-crosspost_to_medium:
   license: all-rights-reserved | cc-40-by | cc-40-by-sa | cc-40-by-nd | cc-40-by-nc | cc-40-by-nc-nd | cc-40-by-nc-sa | cc-40-zero | public-domain
 ```
 
-### `enabled`
+* `enabled`
 
-Default: `true`
+    Default: `true`
 
-Controls crossposting globally. Setting this to false will skip the processing loop entirely which can be useful for local preview builds.
+    Controls crossposting globally. Setting this to false will skip the processing loop entirely which can be useful for local preview builds.
 
-### `cache`
+* `cache`
 
-Default: `[source directory]/.jekyll-crosspost_to_medium`
+    Default: `[source directory]/.jekyll-crosspost_to_medium`
 
-The name of the diretory where crossposted files will be logged. Make sure this file gets checked into your Git repo if you work from multiple computers. This will ensure you never crosspost an entry more than once.
+    The name of the diretory where crossposted files will be logged. Make sure this file gets checked into your Git repo if you work from multiple computers. This will ensure you never crosspost an entry more than once.
 
-### `status`
+* `status`
 
-Default: `public`
+    Default: `public`
 
-The status your post is given when it is syndicated to Medium.
+    The status your post is given when it is syndicated to Medium.
 
-### `license`
+* `license`
 
-Default: `all-rights-reserved`
+    Default: `all-rights-reserved`
 
-The license your post is given when it is syndicated to Medium.
+    The license your post is given when it is syndicated to Medium.
 
 ## A Note on Environment Variables
 
