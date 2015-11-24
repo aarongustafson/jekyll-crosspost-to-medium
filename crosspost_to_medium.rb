@@ -27,11 +27,13 @@ module Jekyll
     priority :low
 
     def generate(site)
+      @site = site
+
       # puts "Kicking off cross-posting to Medium"
-      @settings = site.config['jekyll-crosspost_to_medium']
+      @settings = @site.config['jekyll-crosspost_to_medium']
 
       globally_enabled = @settings['enabled'] || true
-      cache_dir = @settings['cache'] || site.config['source'] + '/.jekyll-crosspost_to_medium'
+      cache_dir = @settings['cache'] || @site.config['source'] + '/.jekyll-crosspost_to_medium'
       @crossposted_file = File.join(cache_dir, "medium_crossposted.yml")
 
       if globally_enabled
@@ -66,15 +68,15 @@ module Jekyll
               end
 
               content = post.content
-              url = "#{site.config['url']}#{post.url}"
+              url = "#{@site.config['url']}#{post.url}"
               title = post.data['title']
 
               crosspost_payload(crossposted, post, content, title, url)
             end
           else
-            markdown_converter = site.getConverterImpl(Jekyll::Converters::Markdown)
-            site.posts.each do |post|
-              
+            markdown_converter = @site.getConverterImpl(Jekyll::Converters::Markdown)
+            @site.posts.each do |post|
+
               if ! post.published?
                 next
               end
@@ -87,12 +89,12 @@ module Jekyll
               # Convert the content
               content = markdown_converter.convert(post.content)
               # Render any plugins
-              content = (Liquid::Template.parse content).render site.site_payload
+              content = (Liquid::Template.parse content).render @site.site_payload
               # Update absolute URLs
-              content = content.gsub /href=(["'])\//, "href=\1#{site.config['url']}/"
-              content = content.gsub /src=(["'])\//, "src=\1#{site.config['url']}/"
+              content = content.gsub /href=(["'])\//, "href=\1#{@site.config['url']}/"
+              content = content.gsub /src=(["'])\//, "src=\1#{@site.config['url']}/"
 
-              url = "#{site.config['url']}#{post.url}"
+              url = "#{@site.config['url']}#{post.url}"
               title = post.title
 
               crosspost_payload(crossposted, post, content, title, url)
@@ -108,6 +110,9 @@ module Jekyll
       content.prepend("<h1>#{title}</h1>")
       content << "<p><i>This article was originally posted <a href=\"#{url}\" rel=\"canonical\">on my own site</a>.</i></p>"
 
+      # Strip domain name from the URL we check against
+      url = url.sub(/^#{@site.config['url']}?/,'')
+
       # Only cross-post if content has not already been cross-posted
       if url and ! crossposted.include? url
         payload = {
@@ -119,7 +124,7 @@ module Jekyll
           'license'       => @settings['license'] || "all-rights-reserved",
           'canonicalUrl'  => url
         }
-        
+
         crosspost_to_medium(payload)
         crossposted << url
 
