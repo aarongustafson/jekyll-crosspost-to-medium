@@ -110,6 +110,9 @@ module Jekyll
       content.prepend("<h1>#{title}</h1>")
       content << "<p><i>This article was originally posted <a href=\"#{url}\" rel=\"canonical\">on my own site</a>.</i></p>"
 
+      # Save canonical URL
+      canonical_url = url
+
       # Strip domain name from the URL we check against
       url = url.sub(/^#{@site.config['url']}?/,'')
 
@@ -122,7 +125,7 @@ module Jekyll
           'tags'          => post.data['tags'],
           'publishStatus' => @settings['status'] || "public",
           'license'       => @settings['license'] || "all-rights-reserved",
-          'canonicalUrl'  => url
+          'canonicalUrl'  => canonical_url
         }
 
         crosspost_to_medium(payload)
