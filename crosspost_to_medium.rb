@@ -70,7 +70,7 @@ module Jekyll
               crosspost_payload(crossposted, post, content, title, url)
             end
           else
-            site.posts do |post|
+            site.posts.each do |post|
               if ! post.published?
                 next
               end
