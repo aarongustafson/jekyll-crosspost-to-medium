@@ -10,6 +10,13 @@ This plugin makes it possible to automatically syndicate your posts to [Medium](
 4. Grab the id from the JSON provided and save that to your [Environment Variables](https://en.wikipedia.org/wiki/Environment_variable) as MEDIUM_USER_ID.
 5. Copy `crosspost_to_medium.rb` to your site’s `plugins` folder.
 
+## Installation
+
+This plugin can be installed in two ways:
+
+1. As a Ruby Gem: `gem install jekyll-crosspost-to-medium`, or
+2. By copying `jekyll-crosspost-to-medium.rb` (found in the `lib` directory) into your `plugins` directory.
+
 ## Crossposting
 
 Add `crosspost_to_medium: true` to the front matter of any post you would like to crosspost to Medium.
