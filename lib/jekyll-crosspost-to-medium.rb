@@ -90,9 +90,6 @@ module Jekyll
               content = markdown_converter.convert(post.content)
               # Render any plugins
               content = (Liquid::Template.parse content).render @site.site_payload
-              # Update absolute URLs
-              content = content.gsub /href=(["'])\//, "href=\1#{@site.config['url']}/"
-              content = content.gsub /src=(["'])\//, "src=\1#{@site.config['url']}/"
 
               url = "#{@site.config['url']}#{post.url}"
               title = post.title
@@ -106,6 +103,10 @@ module Jekyll
 
 
     def crosspost_payload(crossposted, post, content, title, url)
+      # Update any absolute URLs
+      content = content.gsub /href=(["'])\//, "href=\"\1#{@site.config['url']}/"
+      content = content.gsub /src=(["'])\//, "src=\"\1#{@site.config['url']}/"
+
       # Prepend the title and add a link back to originating site
       content.prepend("<h1>#{title}</h1>")
       content << "<p><i>This article was originally posted <a href=\"#{url}\" rel=\"canonical\">on my own site</a>.</i></p>"
