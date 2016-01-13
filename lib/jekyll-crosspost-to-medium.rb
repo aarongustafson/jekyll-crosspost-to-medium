@@ -107,12 +107,23 @@ module Jekyll
       content = content.gsub /href=(["'])\//, "href=\"\1#{@site.config['url']}/"
       content = content.gsub /src=(["'])\//, "src=\"\1#{@site.config['url']}/"
 
-      # Prepend the title and add a link back to originating site
-      content.prepend("<h1>#{title}</h1>")
-      content << "<p><i>This article was originally posted <a href=\"#{url}\" rel=\"canonical\">on my own site</a>.</i></p>"
-
       # Save canonical URL
       canonical_url = url
+
+      # Prepend the title and add a link back to originating site
+      content.prepend("<h1>#{title}</h1>")
+      # Append a canonical link and text
+      # TODO Accept a position option, e.g., top, bottom.
+      # 
+      # User the user's config if it exists
+      if @settings['text']
+          canonical_text = "#{@settings['text']}"
+          canonical_text = canonical_text.gsub /{{ url }}/, canonical_url
+      # Otherwise, use boilerplate
+      else 
+          canonical_text = "<p><i>This article was originally posted <a href=\"#{url}\" rel=\"canonical\">on my own site</a>.</i></p>"
+      end
+      content << canonical_text
 
       # Strip domain name from the URL we check against
       url = url.sub(/^#{@site.config['url']}?/,'')
