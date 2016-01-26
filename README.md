@@ -60,6 +60,12 @@ jekyll-crosspost_to_medium:
 
     The license your post is given when it is syndicated to Medium.
 
+* `text`
+
+    Default: `<p><i>This article was originally posted <a href=\"#{url}\" rel=\"canonical\">on my own site</a>.</i></p>`
+
+    Optionally provide a string to override the default text for the canonical link back to the source post. A `{{ url }}` placeholder should be provided to indicate where to put the canonical link, e.g., `Some <a href="{{ url }}">link</a>`
+
 ## A Note on Environment Variables
 
 If you are having problems setting up Environment Variables, check out these guides:
