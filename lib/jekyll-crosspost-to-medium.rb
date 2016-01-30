@@ -150,8 +150,6 @@ module Jekyll
 
 
     def crosspost_to_medium(payload)
-      puts "Cross-posting “#{payload['title']}” to Medium"
-
       user_id = ENV['MEDIUM_USER_ID'] or false
       token = ENV['MEDIUM_INTEGRATION_TOKEN'] or false
       medium_api = URI.parse("https://api.medium.com/v1/users/#{user_id}/posts")
@@ -172,6 +170,13 @@ module Jekyll
 
       # Post it
       response = https.request(request)
+
+      puts response.inspect
+      if response.code == '201'
+        puts "Posted '#{payload['title']}' to Medium (#{payload['publishStatus']})"
+      else
+        puts "Attempted to post '#{payload['title']}' to Medium. They responded #{response.body}"
+      end
     end
 
   end
