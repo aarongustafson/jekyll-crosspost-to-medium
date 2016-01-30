@@ -30,7 +30,7 @@ module Jekyll
       @site = site
 
       # puts "Kicking off cross-posting to Medium"
-      @settings = @site.config['jekyll-crosspost_to_medium']
+      @settings = @site.config['jekyll-crosspost_to_medium'] || []
 
       globally_enabled = @settings['enabled'] || true
       cache_dir = @settings['cache'] || @site.config['source'] + '/.jekyll-crosspost_to_medium'
@@ -171,7 +171,6 @@ module Jekyll
       # Post it
       response = https.request(request)
 
-      puts response.inspect
       if response.code == '201'
         puts "Posted '#{payload['title']}' to Medium (#{payload['publishStatus']})"
       else
