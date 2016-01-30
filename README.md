@@ -14,7 +14,7 @@ This plugin makes it possible to automatically syndicate your posts to [Medium](
 
 This plugin can be installed in two ways:
 
-1. As a Ruby Gem: 
+1. As a Ruby Gem:
     1. `gem install jekyll-crosspost-to-medium`
     2. Add an `ext.rb` file to your `plugins` directory (or edit your existing one)
     3. Add `require 'jekyll-crosspost-to-medium'`
@@ -67,7 +67,12 @@ jekyll-crosspost_to_medium:
 
     Optionally provide a string to override the default text for the canonical link back to the source post. A `{{ url }}` placeholder should be provided to indicate where to put the canonical link, e.g., `Some <a href="{{ url }}">link</a>`
 
-## A Note on Environment Variables
+
+## Note
+
+If you are passing `tags:` in front matter of your post, make sure it is an array.
+
+## Environment Variables
 
 If you are having problems setting up Environment Variables, check out these guides:
 
