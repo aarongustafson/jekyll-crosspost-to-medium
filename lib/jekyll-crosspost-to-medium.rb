@@ -128,23 +128,29 @@ module Jekyll
       # Strip domain name from the URL we check against
       url = url.sub(/^#{@site.config['url']}?/,'')
 
+      # coerce tage to an array
+      tags = post.data['tags']
+      if tags.kindOf?(String)
+        tags = tags.split(',')
+      end
+
       # Only cross-post if content has not already been cross-posted
       if url and ! crossposted.include? url
         payload = {
           'title'         => title,
           'contentFormat' => "html",
           'content'       => content,
-          'tags'          => post.data['tags'],
+          'tags'          => tags,
           'publishStatus' => @settings['status'] || "public",
           'license'       => @settings['license'] || "all-rights-reserved",
           'canonicalUrl'  => canonical_url
         }
 
-        crosspost_to_medium(payload)
-        crossposted << url
-
-        # Update cache
-        File.open(@crossposted_file, 'w') { |f| YAML.dump(crossposted, f) }
+        if crosspost_to_medium(payload)
+          crossposted << url
+          # Update cache
+          File.open(@crossposted_file, 'w') { |f| YAML.dump(crossposted, f) }
+        end
       end
     end
 
