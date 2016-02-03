@@ -130,7 +130,7 @@ module Jekyll
 
       # coerce tage to an array
       tags = post.data['tags']
-      if tags.kindOf?(String)
+      if tags.kind_of? String
         tags = tags.split(',')
       end
 
