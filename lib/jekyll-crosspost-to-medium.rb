@@ -128,7 +128,7 @@ module Jekyll
       # Strip domain name from the URL we check against
       url = url.sub(/^#{@site.config['url']}?/,'')
 
-      # coerce tage to an array
+      # coerce tags to an array
       tags = post.data['tags']
       if tags.kind_of? String
         tags = tags.split(',')
