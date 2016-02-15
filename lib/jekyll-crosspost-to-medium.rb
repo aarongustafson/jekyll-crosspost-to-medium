@@ -51,8 +51,17 @@ module Jekyll
 
           if File.exists?(@crossposted_file)
             crossposted = open(@crossposted_file) { |f| YAML.load(f) }
+            # convert from an array to a hash (upgrading older versions of this plugin)
+            if crossposted.kind_of?(Array)
+              new_crossposted = {}
+              crossposted.each do |url|
+                new_crossposted[url] = 'unknown'
+              end
+              crossposted = new_crossposted
+            end
+            # end upgrade
           else
-            crossposted = []
+            crossposted = {}
           end
 
           # If Jekyll 3.0, use hooks
@@ -135,7 +144,7 @@ module Jekyll
       end
 
       # Only cross-post if content has not already been cross-posted
-      if url and ! crossposted.include? url
+      if url and ! crossposted.has_key? url
         payload = {
           'title'         => title,
           'contentFormat' => "html",
@@ -146,8 +155,8 @@ module Jekyll
           'canonicalUrl'  => canonical_url
         }
 
-        if crosspost_to_medium(payload)
-          crossposted << url
+        if medium_url = crosspost_to_medium(payload)
+          crossposted[url] = medium_url
           # Update cache
           File.open(@crossposted_file, 'w') { |f| YAML.dump(crossposted, f) }
         end
@@ -178,8 +187,9 @@ module Jekyll
       response = https.request(request)
 
       if response.code == '201'
-        puts "Posted '#{payload['title']}' to Medium (#{payload['publishStatus']})"
-        return true
+        medium_response = JSON.parse(response.body)
+        puts "Posted '#{payload['title']}' to Medium as #{payload['publishStatus']} (#{medium_response['data']['url']})"
+        return medium_response['data']['url']
       else
         puts "Attempted to post '#{payload['title']}' to Medium. They responded #{response.body}"
         return false
