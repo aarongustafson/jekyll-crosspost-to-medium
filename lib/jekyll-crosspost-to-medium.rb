@@ -29,10 +29,8 @@ module Jekyll
     def generate(site)
       @site = site
 
-      # puts "Kicking off cross-posting to Medium"
-      @settings = @site.config['jekyll-crosspost_to_medium'] || []
-
-      globally_enabled = @settings['enabled'] || true
+      @settings = @site.config['jekyll-crosspost_to_medium'] || {}
+      globally_enabled = if @settings.has_key? 'enabled' then @settings['enabled'] else true end
       cache_dir = @settings['cache'] || @site.config['source'] + '/.jekyll-crosspost_to_medium'
       @crossposted_file = File.join(cache_dir, "medium_crossposted.yml")
 
