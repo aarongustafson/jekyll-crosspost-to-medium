@@ -121,8 +121,9 @@ module Jekyll
 
     def crosspost_payload(crossposted, post, content, title, url)
       # Update any absolute URLs
-      content = content.gsub /href=(["'])\//, "href=\"\1#{@site.config['url']}/"
-      content = content.gsub /src=(["'])\//, "src=\"\1#{@site.config['url']}/"
+      # But don’t clobber protocol-less (i.e. "//") URLs
+      content = content.gsub /href=(["'])\/(?!\/)/, "href=\"\1#{@site.config['url']}/"
+      content = content.gsub /src=(["'])\/(?!\/)/, "src=\"\1#{@site.config['url']}/"
 
       # Save canonical URL
       canonical_url = url

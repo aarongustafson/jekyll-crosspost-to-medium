@@ -1,6 +1,6 @@
 Gem::Specification.new do |s|
   s.name        = 'jekyll-crosspost-to-medium'
-  s.version     = '0.1.10'
+  s.version     = '0.1.11'
   s.date        = '2016-03-17'
   s.summary     = "Crosspost to Medium Generator for Jekyll"
   s.description = <<-EOF

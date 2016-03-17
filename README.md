@@ -14,11 +14,10 @@ This plugin makes it possible to automatically syndicate your posts to [Medium](
 
 This plugin can be installed in two ways:
 
-1. As a Ruby Gem: 
-    1. `gem install jekyll-crosspost-to-medium`
-    2. Add an `ext.rb` file to your `plugins` directory (or edit your existing one)
-    3. Add `require 'jekyll-crosspost-to-medium'`
-2. By copying `jekyll-crosspost-to-medium.rb` (found in the `lib` directory) into your `plugins` directory.
+1. As a Ruby Gem: `gem install jekyll-crosspost-to-medium`
+    * Via `_config.yml` add `jekyll-crosspost-to-medium` to your `gems` list; or
+    * Add `require 'jekyll-crosspost-to-medium'` to `ext.rb` in your `plugins` directory (new or existing one)
+2. By directly copying `jekyll-crosspost-to-medium.rb` (found in the `lib` directory) into your `plugins` directory.
 
 ## Crossposting
 
