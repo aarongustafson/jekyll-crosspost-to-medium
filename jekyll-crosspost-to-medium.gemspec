@@ -1,7 +1,7 @@
 Gem::Specification.new do |s|
   s.name        = 'jekyll-crosspost-to-medium'
-  s.version     = '0.1.9'
-  s.date        = '2016-02-15'
+  s.version     = '0.1.10'
+  s.date        = '2016-03-17'
   s.summary     = "Crosspost to Medium Generator for Jekyll"
   s.description = <<-EOF
   This generator cross-posts entries to Medium. To work, this script requires
