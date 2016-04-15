@@ -20,6 +20,7 @@ require 'net/http'
 require 'net/https'
 require 'kramdown'
 require 'uri'
+require 'date'
 
 module Jekyll
   class MediumCrossPostGenerator < Generator
@@ -32,6 +33,7 @@ module Jekyll
       @settings = @site.config['jekyll-crosspost_to_medium'] || {}
       globally_enabled = if @settings.has_key? 'enabled' then @settings['enabled'] else true end
       cache_dir = @settings['cache'] || @site.config['source'] + '/.jekyll-crosspost_to_medium'
+      backdate = if @settings.has_key? 'backdate' then @settings['backdate'] else true end
       @crossposted_file = File.join(cache_dir, "medium_crossposted.yml")
 
       if globally_enabled
@@ -77,8 +79,10 @@ module Jekyll
               content = post.content
               url = "#{@site.config['url']}#{post.url}"
               title = post.data['title']
+              
+              published_at = backdate ? post.date : DateTime.now
 
-              crosspost_payload(crossposted, post, content, title, url)
+              crosspost_payload(crossposted, post, content, title, url, published_at)
             end
           else
             
@@ -109,8 +113,10 @@ module Jekyll
 
               url = "#{@site.config['url']}#{post.url}"
               title = post.title
+              
+              published_at = backdate ? post.date : DateTime.now
 
-              crosspost_payload(crossposted, post, content, title, url)
+              crosspost_payload(crossposted, post, content, title, url, published_at)
               
             end
           end
@@ -119,7 +125,7 @@ module Jekyll
     end
 
 
-    def crosspost_payload(crossposted, post, content, title, url)
+    def crosspost_payload(crossposted, post, content, title, url, published_at)
       # Update any absolute URLs
       # But don’t clobber protocol-less (i.e. "//") URLs
       content = content.gsub /href=(["'])\/(?!\/)/, "href=\\1#{@site.config['url']}/"
@@ -161,6 +167,7 @@ module Jekyll
           'content'       => content,
           'tags'          => tags,
           'publishStatus' => @settings['status'] || "public",
+          'publishedAt'   => published_at.iso8601,
           'license'       => @settings['license'] || "all-rights-reserved",
           'canonicalUrl'  => canonical_url
         }

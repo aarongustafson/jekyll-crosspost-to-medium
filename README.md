@@ -31,9 +31,10 @@ This plugin takes a number of configuration options. These allow you to customis
 jekyll-crosspost_to_medium:
   enabled: true | false
   cache: .jekyll-crosspost_to_medium
-  status: public | draft | unlisted
-  license: all-rights-reserved | cc-40-by | cc-40-by-sa | cc-40-by-nd | cc-40-by-nc | cc-40-by-nc-nd | cc-40-by-nc-sa | cc-40-zero | public-domain
-  text: '<p><i>You (optional) signoff for the post.</i></p>'
+  status: public (default) | draft | unlisted
+  license: all-rights-reserved (default) | cc-40-by | cc-40-by-sa | cc-40-by-nd | cc-40-by-nc | cc-40-by-nc-nd | cc-40-by-nc-sa | cc-40-zero | public-domain
+  text: '<p><i>Your (optional) signoff for the post.</i></p>',
+  backdate: true (default) | false
 ```
 
 * `enabled`
@@ -65,6 +66,12 @@ jekyll-crosspost_to_medium:
     Default: `<p><i>This article was originally posted <a href=\"#{url}\" rel=\"canonical\">on my own site</a>.</i></p>`
 
     Optionally provide a string to override the default text for the canonical link back to the source post. A `{{ url }}` placeholder should be provided to indicate where to put the canonical link, e.g., `Some <a href="{{ url }}">link</a>`
+
+* `backdate`
+
+    Default: `true`
+
+    Whether or not to use the original date & time of publication when crossposting.
 
 ## A Note on Environment Variables
 
