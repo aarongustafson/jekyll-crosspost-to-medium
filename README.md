@@ -2,7 +2,7 @@
 
 This plugin makes it possible to automatically syndicate your posts to [Medium](https://medium.com) from your Jekyll and Octopress projects.
 
-[![Gem Version](https://img.shields.io/gem/v/jekyll.svg)][ruby-gems]
+[![Gem Version](https://img.shields.io/gem/v/jekyll-crosspost-to-medium.svg)][ruby-gems]
 
 [ruby-gems]: https://rubygems.org/gems/jekyll-crosspost-to-medium
 
