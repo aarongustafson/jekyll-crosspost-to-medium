@@ -71,7 +71,7 @@ jekyll-crosspost_to_medium:
 
     Default: `<p><i>This article was originally posted <a href=\"#{url}\" rel=\"canonical\">on my own site</a>.</i></p>`
 
-    Optionally provide a string to override the default text for the canonical link back to the source post. A `{{ url }}` placeholder should be provided to indicate where to put the canonical link, e.g., `Some <a href="{{ url }}">link</a>`
+    Optionally provide a string to override the default text for the canonical link back to the source post. Be sure to replace `#{url}` from the default with `{{ url }}` when customizing and surround the markup with double quotes to properly output the canonical link.
 
 * `backdate`
 
