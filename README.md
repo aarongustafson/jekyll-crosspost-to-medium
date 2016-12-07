@@ -1,6 +1,6 @@
 # Crosspost to Medium Generator for Jekyll and Octopress
 
-This plugin makes it possible to automatically syndicate your posts to [Medium](https://medium.com) from your Jekyll and Octopress projects.
+This plugin makes it possible to automatically syndicate your documents to [Medium](https://medium.com) from your Jekyll and Octopress projects.
 
 [![Gem Version](https://img.shields.io/gem/v/jekyll-crosspost-to-medium.svg)][ruby-gems]
 [![Security](https://hakiri.io/github/aarongustafson/jekyll-crosspost-to-medium/master.svg)][security]
@@ -27,7 +27,7 @@ This plugin can be installed in two ways:
 
 ## Crossposting
 
-Add `crosspost_to_medium: true` to the front matter of any post you would like to crosspost to Medium.
+Add `crosspost_to_medium: true` to the front matter of any document you would like to crosspost to Medium.
 
 ## Configuation
 
@@ -39,7 +39,7 @@ jekyll-crosspost_to_medium:
   cache: .jekyll-crosspost_to_medium
   status: public (default) | draft | unlisted
   license: all-rights-reserved (default) | cc-40-by | cc-40-by-sa | cc-40-by-nd | cc-40-by-nc | cc-40-by-nc-nd | cc-40-by-nc-sa | cc-40-zero | public-domain
-  text: '<p><i>Your (optional) signoff for the post.</i></p>',
+  text: '<p><i>Your (optional) signoff for the document.</i></p>',
   backdate: true (default) | false
 ```
 
@@ -59,19 +59,19 @@ jekyll-crosspost_to_medium:
 
     Default: `public`
 
-    The status your post is given when it is syndicated to Medium.
+    The status your document is given when it is syndicated to Medium.
 
 * `license`
 
     Default: `all-rights-reserved`
 
-    The license your post is given when it is syndicated to Medium.
+    The license your document is given when it is syndicated to Medium.
 
 * `text`
 
     Default: `<p><i>This article was originally posted <a href=\"#{url}\" rel=\"canonical\">on my own site</a>.</i></p>`
 
-    Optionally provide a string to override the default text for the canonical link back to the source post. A `{{ url }}` placeholder should be provided to indicate where to put the canonical link, e.g., `Some <a href="{{ url }}">link</a>`
+    Optionally provide a string to override the default text for the canonical link back to the source document. A `{{ url }}` placeholder should be provided to indicate where to put the canonical link, e.g., `Some <a href="{{ url }}">link</a>`
 
 * `backdate`
 

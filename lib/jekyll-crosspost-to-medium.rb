@@ -66,26 +66,26 @@ module Jekyll
 
           # If Jekyll 3.0, use hooks
           if (Jekyll.const_defined? :Hooks)
-            Jekyll::Hooks.register :posts, :post_render do |post|
-              if ! post.published?
+            Jekyll::Hooks.register :documents, :post_render do |document|
+              if ! document.published?
                 next
               end
 
-              crosspost = post.data.include? 'crosspost_to_medium'
-              if ! crosspost or ! post.data['crosspost_to_medium']
+              crosspost = document.data.include? 'crosspost_to_medium'
+              if ! crosspost or ! document.data['crosspost_to_medium']
                 next
               end
 
-              content = post.content
-              url = "#{@site.config['url']}#{post.url}"
-              title = post.data['title']
-              
-              published_at = backdate ? post.date : DateTime.now
+              content = document.content
+              url = "#{@site.config['url']}#{document.url}"
+              title = document.data['title']
+
+              published_at = backdate ? document.date : DateTime.now
 
               crosspost_payload(crossposted, post, content, title, url, published_at)
             end
           else
-            
+
             # post Jekyll commit 0c0aea3
             # https://github.com/jekyll/jekyll/commit/0c0aea3ad7d2605325d420a23d21729c5cf7cf88
             if defined? site.find_converter_instance
@@ -113,11 +113,11 @@ module Jekyll
 
               url = "#{@site.config['url']}#{post.url}"
               title = post.title
-              
+
               published_at = backdate ? post.date : DateTime.now
 
               crosspost_payload(crossposted, post, content, title, url, published_at)
-              
+
             end
           end
         end
