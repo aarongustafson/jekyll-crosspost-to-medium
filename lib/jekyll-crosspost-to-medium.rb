@@ -18,7 +18,6 @@
 require 'json'
 require 'net/http'
 require 'net/https'
-require 'kramdown'
 require 'uri'
 require 'date'
 
@@ -214,4 +213,5 @@ module Jekyll
     end
 
   end
+  
 end
