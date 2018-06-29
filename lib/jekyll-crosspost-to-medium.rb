@@ -139,7 +139,7 @@ module Jekyll
       # Append a canonical link and text
       # TODO Accept a position option, e.g., top, bottom.
       #
-      # User the user's config if it exists
+      # Use the user's config if it exists
       if @settings['text']
           canonical_text = "#{@settings['text']}"
           canonical_text = canonical_text.gsub /{{ url }}/, canonical_url
