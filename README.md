@@ -11,7 +11,8 @@ This plugin makes it possible to automatically syndicate your posts to [Medium](
 ## Setup
 
 1. [Sign up for a Medium account](https://medium.com/m/signin?redirect=https%3A%2F%2Fmedium.com%3A443%2F) (if you don’t already have one). Log in.
-2. Go to [your settings page](https://medium.com/me/settings) and look for "Integration Tokens". Generate one. Save it to your [Environment Variables](https://en.wikipedia.org/wiki/Environment_variable) as MEDIUM_INTEGRATION_TOKEN.
+2. Request access to the "integration tokens" settings by emailing yourfriends@medium.com. Medium will then grant you access to a clientId and a clientSecret on your settings page. [Read their API docs for more information](https://github.com/Medium/medium-api-docs#21-browser-based-authentication)
+3. Go to [your settings page](https://medium.com/me/settings) and look for "Integration Tokens". Generate one. Save it to your [Environment Variables](https://en.wikipedia.org/wiki/Environment_variable) as MEDIUM_INTEGRATION_TOKEN. 
 3. Visit `https://api.medium.com/v1/me?accessToken=`, adding your Integration Token to the end of that URL
 4. Grab the id from the JSON provided and save that to your [Environment Variables](https://en.wikipedia.org/wiki/Environment_variable) as MEDIUM_USER_ID.
 5. Copy `jekyll-crosspost-to-medium.rb` to your site’s `plugins` folder.
