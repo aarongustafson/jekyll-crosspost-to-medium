@@ -22,7 +22,7 @@ EOF
   s.homepage    = 'http://rubygems.org/gems/jekyll-crosspost-to-medium'
   s.license     = 'MIT'
 
-  s.add_runtime_dependency "jekyll", ">= 2.0", "< 4.0"
+  s.add_runtime_dependency "jekyll", ">= 2.0", "< 5.0"
   s.add_runtime_dependency "json", "~> 2.0"
   s.add_runtime_dependency "http", "~> 2.0"
 end
