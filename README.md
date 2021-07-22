@@ -1,3 +1,5 @@
+<hr><p><strong>This project is in search of a new sponsor as the author is no longer using Jekyll.</strong></p><hr>
+
 # Crosspost to Medium Generator for Jekyll and Octopress
 
 This plugin makes it possible to automatically syndicate your posts to [Medium](https://medium.com) from your Jekyll and Octopress projects.
