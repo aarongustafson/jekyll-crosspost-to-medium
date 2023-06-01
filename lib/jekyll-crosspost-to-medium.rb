@@ -36,12 +36,21 @@ module Jekyll
       @crossposted_file = File.join(cache_dir, "medium_crossposted.yml")
 
       if globally_enabled
-        # puts "Cross-posting enabled"
-        user_id = ENV['MEDIUM_USER_ID'] or false
-        token = ENV['MEDIUM_INTEGRATION_TOKEN'] or false
+        user_id = ENV['MEDIUM_USER_ID'].to_s.strip
+        token = ENV['MEDIUM_INTEGRATION_TOKEN'].to_s.strip
 
-        if ! user_id or ! token
-          raise ArgumentError, "MediumCrossPostGenerator: Environment variables not found"
+        if user_id.empty? && token.empty?
+          puts "[warn] MediumCrossPostGenerator: MEDIUM_USER_ID and MEDIUM_INTEGRATION_TOKEN is not set"
+          return
+        end
+
+        if user_id.empty?
+          raise ArgumentError, "MediumCrossPostGenerator: MEDIUM_USER_ID is not set"
+          return
+        end
+
+        if token.empty?
+          raise ArgumentError, "MediumCrossPostGenerator: MEDIUM_INTEGRATION_TOKEN is not set"
           return
         end
 
