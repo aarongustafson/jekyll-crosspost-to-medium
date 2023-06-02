@@ -36,12 +36,21 @@ module Jekyll
       @crossposted_file = File.join(cache_dir, "medium_crossposted.yml")
 
       if globally_enabled
-        # puts "Cross-posting enabled"
-        user_id = ENV['MEDIUM_USER_ID'] or false
-        token = ENV['MEDIUM_INTEGRATION_TOKEN'] or false
+        user_id = ENV['MEDIUM_USER_ID'].to_s.strip
+        token = ENV['MEDIUM_INTEGRATION_TOKEN'].to_s.strip
 
-        if ! user_id or ! token
-          raise ArgumentError, "MediumCrossPostGenerator: Environment variables not found"
+        if user_id.empty? && token.empty?
+          puts "[warn] MediumCrossPostGenerator: MEDIUM_USER_ID and MEDIUM_INTEGRATION_TOKEN is not set"
+          return
+        end
+
+        if user_id.empty?
+          raise ArgumentError, "MediumCrossPostGenerator: MEDIUM_USER_ID is not set"
+          return
+        end
+
+        if token.empty?
+          raise ArgumentError, "MediumCrossPostGenerator: MEDIUM_INTEGRATION_TOKEN is not set"
           return
         end
 
@@ -63,61 +72,24 @@ module Jekyll
             crossposted = {}
           end
 
-          # If Jekyll 3.0, use hooks
-          if (Jekyll.const_defined? :Hooks)
-            Jekyll::Hooks.register :posts, :post_render do |post|
-              if ! post.published?
-                next
-              end
-
-              crosspost = post.data.include? 'crosspost_to_medium'
-              if ! crosspost or ! post.data['crosspost_to_medium']
-                next
-              end
-
-              content = post.content
-              url = "#{@site.config['url']}#{post.url}"
-              title = post.data['title']
-              
-              published_at = backdate ? post.date : DateTime.now
-
-              crosspost_payload(crossposted, post, content, title, url, published_at)
+          Jekyll::Hooks.register :posts, :post_render do |post|
+            if ! post.published?
+              next
             end
-          else
+
+            crosspost = post.data.include? 'crosspost_to_medium'
+            if ! crosspost or ! post.data['crosspost_to_medium']
+              next
+            end
+
+            content = post.content
+            # here is what generates the canonical_url
+            url = "#{@site.config['url']}#{post.url}"
+            title = post.data['title']
             
-            # post Jekyll commit 0c0aea3
-            # https://github.com/jekyll/jekyll/commit/0c0aea3ad7d2605325d420a23d21729c5cf7cf88
-            if defined? site.find_converter_instance
-              markdown_converter = @site.find_converter_instance(Jekyll::Converters::Markdown)
-            # Prior to Jekyll commit 0c0aea3
-            else
-              markdown_converter = @site.getConverterImpl(Jekyll::Converters::Markdown)
-            end
+            published_at = backdate ? post.date : DateTime.now
 
-            @site.posts.each do |post|
-
-              if ! post.published?
-                next
-              end
-
-              crosspost = post.data.include? 'crosspost_to_medium'
-              if ! crosspost or ! post.data['crosspost_to_medium']
-                next
-              end
-
-              # Convert the content
-              content = markdown_converter.convert(post.content)
-              # Render any plugins
-              content = (Liquid::Template.parse content).render @site.site_payload
-
-              url = "#{@site.config['url']}#{post.url}"
-              title = post.title
-              
-              published_at = backdate ? post.date : DateTime.now
-
-              crosspost_payload(crossposted, post, content, title, url, published_at)
-              
-            end
+            crosspost_payload(crossposted, post, content, title, url, published_at)
           end
         end
       end
